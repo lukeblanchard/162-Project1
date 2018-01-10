@@ -9,7 +9,7 @@
 
     //Enumerated type to track ant direction on the board
     enum Direction {NORTH, EAST, SOUTH, WEST}; 
-    enum Spaces {BLACK, WHITE, ANT}; 
+    enum Space {WHITE, BLACK, ANT}; 
 
 class Ant 
 {
@@ -17,17 +17,19 @@ private:
     Direction orientation; 
     int locationRow; 
     int locationCol; 
-    char **board; 
+    int rows; 
+    int columns;
+    int **board; 
 public:
     Ant(int, int, int, int, Direction); 
     int getRow(); 
     void setRow();
     int getCol(); 
-    void setRow();
+    void setCol();
     Direction getOrientation(); 
     void setOrientation(); 
     void moveAnt(); 
     void printBoard(); 
     ~Ant(); 
-}
+};
 #endif
