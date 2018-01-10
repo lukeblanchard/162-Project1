@@ -17,8 +17,8 @@ class Ant
 private: 
     Direction orientation; 
     Space color;
-    int locationRow; 
-    int locationCol; 
+    int antRow; 
+    int antCol; 
     int rows; 
     int columns;
     Board *board; 
@@ -30,7 +30,7 @@ public:
     void setCol(int);
     Direction getOrientation(); 
     void setOrientation(int); 
-    void moveAnt(); 
+    void move(); 
     void printBoard(); 
     ~Ant(); 
 };
