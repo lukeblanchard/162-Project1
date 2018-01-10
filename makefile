@@ -5,11 +5,11 @@ CXXFLAGS += -pedantic-errors
 CXXFLAGS += -g
 #LDFLAGS = -lboost_date_time
 
-OBJS = Ant.o Menu.o main.o
+OBJS = Ant.o Board.o Menu.o main.o
 
-SRCS = Ant.cpp Menu.cpp main.cpp
+SRCS = Ant.cpp Board.cpp Menu.cpp main.cpp
 
-HEADERS = Ant.hpp Menu.hpp
+HEADERS = Ant.hpp Board.hpp Menu.hpp
 
 #target: dependencies 
 #	rule to build
