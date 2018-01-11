@@ -1,3 +1,5 @@
 changed board: char array to int array, used enum for Spaces
 started with board in Ant, then created Board class
 not sure I'm using the enums correctly, why can't I return enum Spaces, am I just using ints?
+
+--need to change enums from global to local scope
