@@ -6,6 +6,8 @@
 #include "Menu.hpp"
 #include <sstream>
 #include <string> 
+#include <map> 
+#include <iterator> 
 
 Menu::Menu(std::string *menuPrompts, int size)
 {
@@ -17,6 +19,29 @@ Menu::Menu(std::string prompt)
 {
     prompts = nullptr;
     singlePrompt = prompt;
+}
+
+Menu::Menu(std::map<std::string, int*> menuPandR)
+{
+    promptsAndResponses = menuPandR;
+}
+
+void Menu::getAllResponses()
+{
+    for(std::map<std::string, int*>::iterator itr = promptsAndResponses.begin(); itr != promptsAndResponses.end(); ++itr)    
+    {
+        std::cout << itr->first; 
+        *(itr->second) = getIntegerResponse(); 
+    }
+}
+
+void Menu::getAllResponses(int low, int high)
+{
+    for(std::map<std::string, int*>::iterator itr = promptsAndResponses.begin(); itr != promptsAndResponses.end(); ++itr)    
+    {
+        std::cout << itr->first; 
+        *(itr->second) = getIntegerResponse(low, high); 
+    }
 }
 
 void Menu::printMenu()
@@ -54,7 +79,7 @@ bool Menu::checkInt(std::string s)
     return invalid;
 }
 
-void Menu::setIntegerResponse(int low, int high)
+int Menu::getIntegerResponse(int low, int high)
 {
     int response; 
     std::string strResponse;
@@ -82,13 +107,11 @@ void Menu::setIntegerResponse(int low, int high)
             invalid = response < low || response > high;
         }
     }
-    intResponse = response;
+    return response;
 }
 
-void Menu::setIntegerResponse()
+int Menu::getIntegerResponse()
 {
-    printMenu(); 
-
     int response; 
     std::string strResponse;
     bool invalid;
@@ -105,17 +128,12 @@ void Menu::setIntegerResponse()
 
     std::istringstream istr(strResponse);
     istr >> response;
-    intResponse = response;
+    return response;
 }
 
-int Menu::getIntegerResponse()
+void Menu::setPrompts(std::map<std::string, int*> newPAndR)
 {
-    return intResponse;
-}
-
-void Menu::setPrompts(std::string *newPrompts)
-{
-    prompts = newPrompts;
+    promptsAndResponses = newPAndR;
 }
 
 void Menu::setSinglePrompt(std::string newPrompt)

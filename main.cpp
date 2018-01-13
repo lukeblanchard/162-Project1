@@ -6,36 +6,51 @@
 #include "Ant.hpp"
 #include "Menu.hpp"
 #include <string>
+#include <map>
 
 int main()
 {
+    int playOrQuit;
     int rows;
     int cols; 
     int steps; 
     int startRow; 
     int startCol;
-    std::string beginPrompts[] = {"1. Start Langton's Ant simulation", "2. Quit"}; 
-    std::string middlePrompts[] = {"Number of rows for the board: ", "Number of columns for the board: ", 
-                                   "Number of steps in simulation: ", "Starting row of ant: ", "Starting column of ant: "}; 
-    std::string endPrompts[] = {"1. Play again", "2. Quit"}; 
+    
+    std::map <std::string, int*> beginPrompts; 
+    beginPrompts["1. Start Langton's Ant simulation\n2. Quit\n"] = &playOrQuit;
 
-    bool play = true; 
-    Menu antMenu(beginPrompts, 2); 
-    antMenu.setResponse(1, 2); 
+    std::map <std::string, int*> middlePrompts; 
+    middlePrompts["Number of rows for the board: "] = &rows; 
+    middlePrompts["Number of columns for the board: "] = &cols; 
+    middlePrompts["Number of steps in simulation: "] = &steps; 
+    middlePrompts["Starting row of ant: "] = &startRow; 
+    middlePrompts["Starting column of ant: "] = &startCol; 
 
-    if (antMenu.getResponse() == 2)
-        play = false;
+    std::map <std::string, int*> endPrompts; 
+    endPrompts["1. Play again\n2. Quit\n"] = &playOrQuit;
 
-    while(play)
+    Menu antMenu(beginPrompts);
+    antMenu.getAllResponses(1, 2); 
+   
+    while(playOrQuit == 1)
     {
-        for(int i = 0; i < )
 
-    Ant langton(5, 5, 2, 3, NORTH); 
-    Menu antMenu(prompts, 2); 
-    antMenu.printMenu(); 
-    antMenu.setIntegerResponse(1,2); 
-    resp = antMenu.getIntegerResponse();  
+        antMenu.setPrompts(middlePrompts);
+        antMenu.getAllResponses(); 
+        
+        Ant langton(rows, cols, startRow, startCol, NORTH);
 
+        langton.printBoard(); 
+
+        for(int i = 0; i < steps; i++)
+        {
+            langton.move();
+            langton.printBoard(); 
+        }
+        
+        antMenu.setPrompts(endPrompts); 
+        antMenu.getAllResponses(1,2); 
     }
 
     return 0;
