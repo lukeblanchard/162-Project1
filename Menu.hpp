@@ -17,12 +17,20 @@ private:
     int menuSize;
     std::string stringResponse; 
     std::string *prompts; 
+    std::string singlePrompt;
 public:
     Menu(std::string*, int); 
+    Menu(std::string); 
     void printMenu(); 
-    int getIntegerResponse(int, int); 
+    void setIntegerResponse(int, int); 
+    void setIntegerResponse(); 
+    int getIntegerResponse(); 
+    bool checkInt(std::string);
+    void setStringResponse(); 
     std::string getStringResponse(); 
-    bool validateIntResponse(); 
+    void setPrompts(std::string*); 
+    void setSinglePrompt(std::string); 
+    void printSinglePrompt(); 
 };
 
 #endif

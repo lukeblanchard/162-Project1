@@ -3,7 +3,9 @@
  ** Date: January 10, 2018
  ** Description: Menu class implementation
  ****************************************************************************/
- #include "Menu.hpp"
+#include "Menu.hpp"
+#include <sstream>
+#include <string> 
 
 Menu::Menu(std::string *menuPrompts, int size)
 {
@@ -11,23 +13,113 @@ Menu::Menu(std::string *menuPrompts, int size)
     menuSize = size; 
 }
 
-void Menu::printMenu()
+Menu::Menu(std::string prompt)
 {
-    for(int i = 0; i < menuSize; i++)
-        std::cout << prompts[i] << std::endl; 
+    prompts = nullptr;
+    singlePrompt = prompt;
 }
 
-int Menu::getIntegerResponse(int low, int high)
+void Menu::printMenu()
+{
+    if(prompts == nullptr)
+    {
+        std::cout << singlePrompt << std::endl;
+    }
+    else
+    {
+        for(int i = 0; i < menuSize; i++)
+            std::cout << prompts[i] << std::endl; 
+    }
+}
+
+bool Menu::checkInt(std::string s)
+{
+    bool invalid = false; 
+
+    for(std::string::iterator it = s.begin(); it != s.end(); ++it)
+    {
+        if((int) *it > 57 || (int) *it < 48)
+        {
+            if(it == s.begin() && (int) *it == 45)
+            {
+                continue; 
+            }
+            else
+            {
+                invalid = true; 
+                break;
+            }
+        }
+    }
+    return invalid;
+}
+
+void Menu::setIntegerResponse(int low, int high)
 {
     int response; 
-    std::cin >> response; 
-    while(std::cin.fail() || response < low || response > high)
+    std::string strResponse;
+    bool invalid;
+
+    std::getline(std::cin, strResponse);
+    invalid = checkInt(strResponse); 
+
+    if(!invalid)
     {
-        std::cin.clear(); 
-        std::cin.ignore(); 
-        std::cout << "Please enter a valid number from " << low << "-" << high << ": "; 
-        std::cin >> response;
+        std::istringstream istr(strResponse);
+        istr >> response;   
+        invalid = response < low || response > high;
     }
-    
-    return response;
+
+    while(invalid) 
+    {
+        std::cout << "Please enter a valid number from " << low << "-" << high << ": "; 
+        std::getline(std::cin, strResponse);
+        invalid = checkInt(strResponse); 
+        if(!invalid)
+        {
+            std::istringstream istr(strResponse);
+            istr >> response;   
+            invalid = response < low || response > high;
+        }
+    }
+    intResponse = response;
+}
+
+void Menu::setIntegerResponse()
+{
+    printMenu(); 
+
+    int response; 
+    std::string strResponse;
+    bool invalid;
+
+    std::getline(std::cin, strResponse);
+    invalid = checkInt(strResponse); 
+
+    while(invalid) 
+    {
+        std::cout << "Please enter a valid number: ";  
+        std::getline(std::cin, strResponse);
+        invalid = checkInt(strResponse); 
+    }
+
+    std::istringstream istr(strResponse);
+    istr >> response;
+    intResponse = response;
+}
+
+int Menu::getIntegerResponse()
+{
+    return intResponse;
+}
+
+void Menu::setPrompts(std::string *newPrompts)
+{
+    prompts = newPrompts;
+}
+
+void Menu::setSinglePrompt(std::string newPrompt)
+{
+    prompts = nullptr;
+    singlePrompt = newPrompt;
 }
