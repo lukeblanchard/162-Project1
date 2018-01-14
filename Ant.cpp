@@ -3,6 +3,7 @@
  ** Date: January 10, 2018
  ** Description: Function implementation for the Ant class 
  ****************************************************************************/
+
 #include "Ant.hpp"
 #include <iostream> 
 #include <string>

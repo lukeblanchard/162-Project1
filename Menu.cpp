@@ -6,55 +6,43 @@
 #include "Menu.hpp"
 #include <sstream>
 #include <string> 
-#include <map> 
 #include <vector> 
 #include <iterator> 
+#include <cctype> 
 
-Menu::Menu(std::string *menuPrompts, int size)
+void Menu::getAllResponses(menuIntIO menuInt)
 {
-    prompts = menuPrompts;
-    menuSize = size; 
-}
-
-Menu::Menu(std::string prompt)
-{
-    prompts = nullptr;
-    singlePrompt = prompt;
-}
-
-Menu::Menu(std::vector<menuPair> menuPandR)
-{
-    promptsAndResponses = menuPandR;
-}
-
-void Menu::getAllResponses()
-{
-    for(std::vector<menuPair>::iterator itr = promptsAndResponses.begin(); itr != promptsAndResponses.end(); ++itr)    
+    for(menuIntIO::iterator itr = intResponses.begin(); itr != intResponses.end(); ++itr)    
     {
         std::cout << itr->first; 
         *(itr->second) = getIntegerResponse(); 
     }
 }
 
-void Menu::getAllResponses(int low, int high, int offset)
+void Menu::getAllResponses(menuIntIO menuInt, int low, int high, int offset)
 {
-    for(std::vector<menuPair>::iterator itr = promptsAndResponses.begin(); itr != promptsAndResponses.end(); ++itr)    
+    for(menuIntIO::iterator itr = intResponses.begin(); itr != intResponses.end(); ++itr)    
     {
         std::cout << itr->first; 
         *(itr->second) = getIntegerResponse(low, high, offset); 
     }
 }
 
-void Menu::printMenu()
+void Menu::getAllResponses(menuStringIO menuString)
 {
-    if(prompts == nullptr)
+    for(menuStringIO::iterator itr = stringResponses.begin(); itr != stringResponses.end(); ++itr)    
     {
-        std::cout << singlePrompt << std::endl;
+        std::cout << itr->first; 
+        getline(std::cin,*(itr->second));
     }
-    else
+}
+
+void Menu::getAllResponses(menuBoolIO menuBool)
+{
+    for(menuBoolIO::iterator itr = boolResponses.begin(); itr != boolResponses.end(); ++itr)    
     {
-        for(int i = 0; i < menuSize; i++)
-            std::cout << prompts[i] << std::endl; 
+        std::cout << itr->first; 
+        *(itr->second) = getBoolResponse(); 
     }
 }
 
@@ -132,13 +120,61 @@ int Menu::getIntegerResponse()
     return response;
 }
 
-void Menu::setPrompts(std::vector<menuPair> newPAndR)
+bool Menu::getBoolResponse()
 {
-    promptsAndResponses = newPAndR;
+    std::string strResponse;
+    bool invalid;
+
+    std::getline(std::cin, strResponse);
+    invalid = checkBool(&strResponse); 
+
+    while(invalid) 
+    {
+        std::cout << "Please enter 'y' or 'n': ";  
+        std::getline(std::cin, strResponse);
+        invalid = checkBool(&strResponse); 
+    }
+    if(strResponse == "NO" || strResponse == "N")
+        return false; 
+    else
+        return true;
 }
 
-void Menu::setSinglePrompt(std::string newPrompt)
+bool Menu::checkBool(std::string *resp) 
 {
-    prompts = nullptr;
-    singlePrompt = newPrompt;
+    for(std::string::iterator it = resp->begin(); it != resp->end(); ++it)
+    {
+        *it = toupper(*it); 
+    }
+    std::cout << *resp << std::endl; 
+
+    if(*resp != "NO" && *resp != "N" && *resp != "YES" && *resp != "Y")
+        return true; 
+    else
+        return false;
 }
+
+void Menu::load(menuIntIO newPAndR)
+{
+    intResponses = newPAndR;
+    getAllResponses(intResponses);  
+}
+
+void Menu::load(menuIntIO newPAndR, int low, int high, int offset)
+{
+    intResponses = newPAndR;
+    getAllResponses(intResponses, low, high, offset);  
+}
+
+void Menu::load(menuStringIO newPAndR)
+{
+    stringResponses = newPAndR;
+    getAllResponses(stringResponses);
+}
+
+void Menu::load(menuBoolIO newPAndR)
+{
+    boolResponses = newPAndR;
+    getAllResponses(boolResponses); 
+}
+

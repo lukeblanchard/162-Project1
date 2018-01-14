@@ -11,35 +11,37 @@
 #include <string>
 #include <vector>
 
-typedef std::pair<std::string, int*> menuPair; 
-typedef std::vector<menuPair> menuIO; 
+typedef std::pair<std::string, int*> menuIntPrompts; 
+typedef std::pair<std::string, std::string*> menuStringPrompts; 
+typedef std::pair<std::string, bool*> menuBoolPrompts; 
+typedef std::vector<menuIntPrompts> menuIntIO; 
+typedef std::vector<menuStringPrompts> menuStringIO; 
+typedef std::vector<menuBoolPrompts> menuBoolIO; 
 
 class Menu 
 {
 private: 
-    int intResponse; 
-    int menuSize;
-    std::vector<menuPair> promptsAndResponses;
-
-    std::string *prompts; 
-    std::string singlePrompt;
+    menuIntIO intResponses;
+    menuStringIO stringResponses;
+    menuBoolIO boolResponses;
 public:
-    Menu(std::string*, int); 
-    Menu(std::string); 
-    Menu(menuIO);     
-    void getAllResponses(); 
-    void getAllResponses(int, int, int offset=0); 
+    void load(menuIntIO); 
+    void load(menuIntIO, int, int, int offset = 0); 
+    void load(menuStringIO); 
+    void load(menuBoolIO); 
 
+    void getAllResponses(menuIntIO); 
+    void getAllResponses(menuIntIO, int, int, int); 
+    void getAllResponses(menuStringIO); 
+    void getAllResponses(menuBoolIO); 
 
-    void printMenu(); 
+    
     int getIntegerResponse(int, int, int); 
     int getIntegerResponse(); 
     bool checkInt(std::string);
-    void setStringResponse(); 
-    std::string getStringResponse(); 
-    void setPrompts(std::vector<menuPair>); 
-    void setSinglePrompt(std::string); 
-    void printSinglePrompt(); 
+
+    bool getBoolResponse(); 
+    bool checkBool(std::string*); 
 };
 
 #endif
