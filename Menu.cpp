@@ -7,6 +7,7 @@
 #include <sstream>
 #include <string> 
 #include <map> 
+#include <vector> 
 #include <iterator> 
 
 Menu::Menu(std::string *menuPrompts, int size)
@@ -21,26 +22,26 @@ Menu::Menu(std::string prompt)
     singlePrompt = prompt;
 }
 
-Menu::Menu(std::map<std::string, int*> menuPandR)
+Menu::Menu(std::vector<menuPair> menuPandR)
 {
     promptsAndResponses = menuPandR;
 }
 
 void Menu::getAllResponses()
 {
-    for(std::map<std::string, int*>::iterator itr = promptsAndResponses.begin(); itr != promptsAndResponses.end(); ++itr)    
+    for(std::vector<menuPair>::iterator itr = promptsAndResponses.begin(); itr != promptsAndResponses.end(); ++itr)    
     {
         std::cout << itr->first; 
         *(itr->second) = getIntegerResponse(); 
     }
 }
 
-void Menu::getAllResponses(int low, int high)
+void Menu::getAllResponses(int low, int high, int offset)
 {
-    for(std::map<std::string, int*>::iterator itr = promptsAndResponses.begin(); itr != promptsAndResponses.end(); ++itr)    
+    for(std::vector<menuPair>::iterator itr = promptsAndResponses.begin(); itr != promptsAndResponses.end(); ++itr)    
     {
         std::cout << itr->first; 
-        *(itr->second) = getIntegerResponse(low, high); 
+        *(itr->second) = getIntegerResponse(low, high, offset); 
     }
 }
 
@@ -79,7 +80,7 @@ bool Menu::checkInt(std::string s)
     return invalid;
 }
 
-int Menu::getIntegerResponse(int low, int high)
+int Menu::getIntegerResponse(int low, int high, int offset)
 {
     int response; 
     std::string strResponse;
@@ -97,7 +98,7 @@ int Menu::getIntegerResponse(int low, int high)
 
     while(invalid) 
     {
-        std::cout << "Please enter a valid number from " << low << "-" << high << ": "; 
+        std::cout << "Please enter a valid choice from " << low << "-" << high << ": "; 
         std::getline(std::cin, strResponse);
         invalid = checkInt(strResponse); 
         if(!invalid)
@@ -107,7 +108,7 @@ int Menu::getIntegerResponse(int low, int high)
             invalid = response < low || response > high;
         }
     }
-    return response;
+    return response + offset;
 }
 
 int Menu::getIntegerResponse()
@@ -131,7 +132,7 @@ int Menu::getIntegerResponse()
     return response;
 }
 
-void Menu::setPrompts(std::map<std::string, int*> newPAndR)
+void Menu::setPrompts(std::vector<menuPair> newPAndR)
 {
     promptsAndResponses = newPAndR;
 }

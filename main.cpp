@@ -6,7 +6,8 @@
 #include "Ant.hpp"
 #include "Menu.hpp"
 #include <string>
-#include <map>
+#include <vector>
+
 
 int main()
 {
@@ -16,19 +17,23 @@ int main()
     int steps; 
     int startRow; 
     int startCol;
+
+    menuIO beginPrompts; 
+    beginPrompts.push_back(std::make_pair("1. Start Langton's Ant simulation\n2. Quit\n", &playOrQuit)); 
+
+    menuIO boardSetup; 
+    boardSetup.push_back(std::make_pair("Number of rows for the board: ", &rows)); 
+    boardSetup.push_back(std::make_pair("Number of columns for the board: ", &cols)); 
+    boardSetup.push_back(std::make_pair("Number of steps for the simulation: ", &steps)); 
+
+    menuIO rowStartLocation; 
+    rowStartLocation.push_back(std::make_pair("Starting row of ant: ", &startRow)); 
+
+    menuIO colStartLocation; 
+    colStartLocation.push_back(std::make_pair("Starting column of ant: ", &startCol)); 
     
-    std::map <std::string, int*> beginPrompts; 
-    beginPrompts["1. Start Langton's Ant simulation\n2. Quit\n"] = &playOrQuit;
-
-    std::map <std::string, int*> middlePrompts; 
-    middlePrompts["Number of rows for the board: "] = &rows; 
-    middlePrompts["Number of columns for the board: "] = &cols; 
-    middlePrompts["Number of steps in simulation: "] = &steps; 
-    middlePrompts["Starting row of ant: "] = &startRow; 
-    middlePrompts["Starting column of ant: "] = &startCol; 
-
-    std::map <std::string, int*> endPrompts; 
-    endPrompts["1. Play again\n2. Quit\n"] = &playOrQuit;
+    menuIO endPrompt; 
+    endPrompt.push_back(std::make_pair("1. Play again\n2. Quit\n", &playOrQuit)); 
 
     Menu antMenu(beginPrompts);
     antMenu.getAllResponses(1, 2); 
@@ -36,9 +41,15 @@ int main()
     while(playOrQuit == 1)
     {
 
-        antMenu.setPrompts(middlePrompts);
+        antMenu.setPrompts(boardSetup);
         antMenu.getAllResponses(); 
+
+        antMenu.setPrompts(rowStartLocation); 
+        antMenu.getAllResponses(1, rows, -1); 
         
+        antMenu.setPrompts(colStartLocation); 
+        antMenu.getAllResponses(1, cols, -1); 
+
         Ant langton(rows, cols, startRow, startCol, NORTH);
 
         langton.printBoard(); 
@@ -49,9 +60,8 @@ int main()
             langton.printBoard(); 
         }
         
-        antMenu.setPrompts(endPrompts); 
+        antMenu.setPrompts(endPrompt); 
         antMenu.getAllResponses(1,2); 
     }
-
     return 0;
 }
